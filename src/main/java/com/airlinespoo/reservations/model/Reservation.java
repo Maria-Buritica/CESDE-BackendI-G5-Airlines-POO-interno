@@ -5,21 +5,50 @@ import com.airlinespoo.core.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Reservation {
     private static final int MAX_PASSENGER = 10;
     private final int id;
     private final List<ReservationDetail> details = new ArrayList<>();
 
-    public Reservation(int id, ReservationDetail firstDetail){
-        Validator.requirePositive(id, "número de la reserva.");
+    public Reservation(int id, ReservationDetail firstDetail) {
+        Validator.requirePositive(id, "número de la reserva");
         this.id = id;
+        Validator.requireNotNull(firstDetail, "primer pasajero");
         addDetail(firstDetail);
 
     }
 
+
     public List<ReservationDetail> getDetails() {
         return List.copyOf(details);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Reservation other = (Reservation) o;
+        return id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return id + ": " + details.size() + details;
     }
 
     public void addDetail(ReservationDetail detail) {
@@ -28,7 +57,7 @@ public class Reservation {
         }
         for (ReservationDetail existing : details) {
             if (existing.getPassengerDocument().equals(detail.getPassengerDocument())) {
-                throw new ValidationException("Ya exíste un pasajero con ese documento.");
+                throw new ValidationException("Ya existe un pasajero con ese documento.");
             }
         }
         for (ReservationDetail existing : details) {
