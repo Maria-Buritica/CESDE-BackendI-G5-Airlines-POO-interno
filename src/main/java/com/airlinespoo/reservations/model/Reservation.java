@@ -1,13 +1,14 @@
 package com.airlinespoo.reservations.model;
 
 import com.airlinespoo.core.exception.ValidationException;
+import com.airlinespoo.core.model.Identifiable;
 import com.airlinespoo.core.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Reservation {
+public class Reservation implements Identifiable<Integer> {
     private static final int MAX_PASSENGER = 10;
     private final int id;
     private final List<ReservationDetail> details = new ArrayList<>();
@@ -20,12 +21,12 @@ public class Reservation {
 
     }
 
-
     public List<ReservationDetail> getDetails() {
         return List.copyOf(details);
     }
 
-    public int getId() {
+    @Override
+    public Integer getId() {
         return id;
     }
 
