@@ -8,6 +8,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/** Casos del primer avance: datos válidos, cambios de nombre e identidad. */
 class AirlineTest {
 
     @Test
@@ -54,6 +55,7 @@ class AirlineTest {
         Set<Airline> airlines = new HashSet<>();
         airlines.add(airline);
         airline.setName("Otro nombre");
+
         Airline sameIdentity = new Airline(100, "Nombre anterior");
         assertEquals(airline, sameIdentity);
         assertEquals(airline.hashCode(), sameIdentity.hashCode());
@@ -61,5 +63,20 @@ class AirlineTest {
         assertNotEquals(airline, new Airline(110, "Otro nombre"));
         assertNotEquals(null, airline);
         assertNotEquals("Otro nombre", airline);
+    }
+
+    @Test
+    void acceptsRenamingToItsOwnName() {
+        Airline airline = new Airline(100, "Avianca");
+        airline.setName("Avianca");
+        assertEquals("Avianca", airline.getName());
+        assertEquals(100, airline.getId());
+    }
+
+    @Test
+    void textRepresentationContainsIdAndName() {
+        String description = new Airline(100, "Avianca").toString();
+        assertTrue(description.contains("100"));
+        assertTrue(description.contains("Avianca"));
     }
 }

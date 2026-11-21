@@ -1,11 +1,12 @@
 package com.airlinespoo.airlines.model;
 
+import com.airlinespoo.core.exception.ValidationException;
 import com.airlinespoo.core.model.Identifiable;
 import com.airlinespoo.core.util.Validator;
 
 /**
- * Aerolínea con identidad fija y nombre válido.
- * La generación del id y la unicidad del nombre corresponden al servicio.
+ * Representa una aerolínea con un identificador fijo y un nombre válido.
+ * El servicio se encargará de generar los ids y evitar nombres repetidos.
  */
 public final class Airline implements Identifiable<Integer> {
 
@@ -15,11 +16,11 @@ public final class Airline implements Identifiable<Integer> {
     private String name;
 
     /**
-     * Crea una aerolínea con un identificador previamente asignado.
+     * Construye una aerolínea con los datos recibidos.
      *
-     * @param id identificador positivo; el generador usará 100, 110, 120...
-     * @param name nombre obligatorio, de máximo 50 caracteres una vez normalizado
-     * @throws com.airlinespoo.core.exception.ValidationException si algún dato es inválido
+     * @param id identificador positivo asignado por el programa
+     * @param name nombre obligatorio de máximo 50 caracteres
+     * @throws ValidationException si el id o el nombre no son válidos
      */
     public Airline(int id, String name) {
         Validator.requirePositive(id, "id de la aerolínea");
@@ -27,28 +28,38 @@ public final class Airline implements Identifiable<Integer> {
         setName(name);
     }
 
-    /** @return identificador inmutable de la aerolínea */
+    /**
+     * @return identificador que no cambia durante la vida del objeto
+     */
     @Override
     public Integer getId() {
         return id;
     }
 
-    /** @return nombre normalizado de la aerolínea */
+    /**
+     * @return nombre sin espacios sobrantes
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * Cambia el nombre; el servicio debe comprobar antes que no esté repetido.
+     * Actualiza el nombre después de validarlo.
+     * Si la validación falla, se conserva el nombre anterior.
      *
-     * @param name nuevo nombre obligatorio, de máximo 50 caracteres
-     * @throws com.airlinespoo.core.exception.ValidationException si el nombre es inválido
+     * @param name nuevo nombre; el servicio debe verificar su unicidad
+     * @throws ValidationException si está vacío o supera 50 caracteres
      */
     public void setName(String name) {
         this.name = Validator.requireText(name, "nombre de la aerolínea", MAX_NAME_LENGTH);
     }
 
-    /** @return si ambos objetos representan la misma identidad */
+    /**
+     * Compara la identidad, aunque los nombres sean diferentes.
+     *
+     * @param other objeto con el que se compara
+     * @return true si es una aerolínea con el mismo id
+     */
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -61,13 +72,17 @@ public final class Airline implements Identifiable<Integer> {
         return id == airline.id;
     }
 
-    /** @return código hash basado únicamente en el identificador */
+    /**
+     * @return código hash de la identidad, estable al renombrar
+     */
     @Override
     public int hashCode() {
         return Integer.hashCode(id);
     }
 
-    /** @return representación con el identificador y el nombre */
+    /**
+     * @return texto con el identificador y el nombre
+     */
     @Override
     public String toString() {
         return "Airline{id=" + id + ", name='" + name + "'}";
